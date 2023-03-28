@@ -74,7 +74,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 
 echo "Configuring Network Manager"
 
-sed -i '/managed=fasle/d' ./etc/NetworkManager/NetworkManager.conf
+sed -i '/managed=fasle/d' /etc/NetworkManager/NetworkManager.conf
 echo "managed=true" >> /etc/NetworkManager/NetworkManager.conf
 
 
@@ -102,7 +102,10 @@ while true; do
     esac
 done
 
-lspci -nn | egrep -i "3d|display|vga" | grep "NVIDIA"
+if [[ $(lspci -nn | egrep -i "3d|display|vga" | grep "NVIDIA") == *NVIDIA* ]]; then
+  echo "Found NVIDIA device, installing driver."
+  apt install nvidia-driver -y
+fi
 
 echo "Remove unnecessary packages"
 apt autoremove -y
