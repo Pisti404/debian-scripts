@@ -53,6 +53,7 @@ Pin-Priority: 100
 
 package: *
 Pin: release a=bullseye-backports
+Pin-Priority: 90
 
 package: *
 Pin: release a=bullseye
