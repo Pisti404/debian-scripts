@@ -69,7 +69,7 @@ apt update && apt upgrade -y && apt autoremove -y
 
 echo "Installing gnome and default software"
 
-apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak git nala firmware-misc-nonfree -y
+apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak git nala vlc firmware-misc-nonfree -y
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "Configuring Network Manager"
@@ -87,7 +87,7 @@ rm -r linux-firmware
 while true; do
     read -p "Do you want to install wine and lutris? " yn
     case $yn in
-        [Yy]* ) dpkg --add-architecture i386; wget -nc https://dl.winehq.org/wine-builds/winehq.key; apt-key add winehq.key; echo "deb https://dl.winehq.org/wine-builds/debian/ sid main" >> /etc/apt/sources.list; apt update; apt install winehq-staging winetricks lutris -y; break;;
+        [Yy]* ) dpkg --add-architecture i386; wget -qO- https://dl.winehq.org/wine-builds/winehq.key | tee /etc/apt/trusted.gpg.d/winehq.key; echo "deb https://dl.winehq.org/wine-builds/debian/ sid main" >> /etc/apt/sources.list; apt update; apt install winehq-staging winetricks lutris -y; break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
