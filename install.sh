@@ -7,6 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 apt update && apt upgarde -y
+apt install curl -y
 
 echo "Recreating sources list"
 
@@ -30,13 +31,6 @@ deb http://deb.debian.org/debian bullseye-backports main contrib non-free
 deb-src http://deb.debian.org/debian bullseye-backports main contrib non-free
 EOT
 
-echo "Adding pipewire upstream stable repo" 
-
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 25088A0359807596
-
-echo "deb http://ppa.launchpad.net/pipewire-debian/pipewire-upstream/ubuntu $(lsb_release -cs) main" >> /etc/apt/sources.list
-echo "deb-src http://ppa.launchpad.net/pipewire-debian/pipewire-upstream/ubuntu $(lsb_release -cs) main" >> /etc/apt/sources.list
-
 echo "Adding lqx-kernel repository"
 
 mkdir tmp
@@ -53,10 +47,6 @@ rm -r tmp
 
 echo "Setting repository priority"
 cat <<EOT >> /etc/apt/preferences.d/default
-package: *
-Pin: release a=bookworm
-Pin-Priority: 110
-
 package: *
 Pin: release a=sid
 Pin-Priority: 100
