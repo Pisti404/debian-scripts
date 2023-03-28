@@ -6,7 +6,7 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-apt update && apt upgrde -y
+apt update && apt upgarde -y
 
 echo "Recreating sources list"
 
