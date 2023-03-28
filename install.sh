@@ -110,4 +110,4 @@ fi
 echo "Remove unnecessary packages"
 apt autoremove -y
 
-echo "Done"
+echo "Done, please reboot your system."
