@@ -82,5 +82,24 @@ echo "Installing firmware"
 cd
 git clone https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/
 cp -r linux-firmware/* /usr/lib/firmware
+rm -r linux-firmware
+
+while true; do
+    read -p "Do you want to install wine and lutris? " yn
+    case $yn in
+        [Yy]* ) dpkg --add-architecture i386; wget -nc https://dl.winehq.org/wine-builds/winehq.key; apt-key add winehq.key; echo "deb https://dl.winehq.org/wine-builds/debian/ sid main" >> /etc/apt/sources.list; apt update; apt install winehq-staging winetricks lutris -y; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+while true; do
+    read -p "Do you want to install Steam? " yn
+    case $yn in
+        [Yy]* ) dpkg --add-architecture i386; apt install steam -y; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
 echo "Done"
