@@ -49,7 +49,7 @@ chmod +x liquorix.sh
 ./liquorix.sh
 
 cd ..
-rm -r /tmp
+rm -r tmp
 
 echo "Setting repository priority"
 cat <<EOT >> /etc/apt/preferences.d/default
