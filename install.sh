@@ -52,7 +52,23 @@ cd ..
 rm -r /tmp
 
 echo "Setting repository priority"
----------------
+cat <<EOT >> /etc/apt/preferences.d/default
+package: *
+Pin: release a=bookworm
+Pin-Priority: 110
+
+package: *
+Pin: release a=sid
+Pin-Priority: 100
+
+package: *
+Pin: release a=bullseye-backports
+
+package: *
+Pin: release a=bullseye
+Pin-Priority: 80
+EOT
+
 
 
 echo "Upgrading system"
@@ -61,4 +77,7 @@ apt update && apt upgrade -y && apt autoremove -y
 
 
 echo "Installing gnome and default software"
+
+apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak -y
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
