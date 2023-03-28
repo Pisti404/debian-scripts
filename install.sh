@@ -6,7 +6,7 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-apt update && apt upgarde -y
+apt update && apt upgrade -y
 apt install curl -y
 
 echo "Recreating sources list"
