@@ -78,6 +78,12 @@ apt update && apt upgrade -y && apt autoremove -y
 
 echo "Installing gnome and default software"
 
-apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak -y
+apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak git nala -y
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
+echo "Installing firmware"
+cd
+git clone https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/
+cp -r linux-firmware/* /usr/lib/firmware
+
+echo "Done"
