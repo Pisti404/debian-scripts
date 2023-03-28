@@ -24,8 +24,8 @@ deb-src http://deb.debian.org/debian-security/ bullseye-security main contrib no
 deb http://deb.debian.org/debian bullseye-updates main contrib non-free
 deb-src http://deb.debian.org/debian bullseye-updates main contrib non-free
 
-deb http://deb.debian.org/debian sid main contrib non-free
-deb-src http://deb.debian.org/debian sid main contrib non-free
+deb http://deb.debian.org/debian sid main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian sid main contrib non-free non-free-firmware
 
 deb http://deb.debian.org/debian bullseye-backports main contrib non-free
 deb-src http://deb.debian.org/debian bullseye-backports main contrib non-free
@@ -69,7 +69,7 @@ apt update && apt upgrade -y && apt autoremove -y
 
 echo "Installing gnome and default software"
 
-apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak git nala -y
+apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak git nala firmware-misc-nonfree -y
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "Configuring Network Manager"
@@ -101,5 +101,10 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
+
+lspci -nn | egrep -i "3d|display|vga" | grep "NVIDIA"
+
+echo "Remove unnecessary packages"
+apt autoremove -y
 
 echo "Done"
