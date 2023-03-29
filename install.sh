@@ -7,7 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 apt update && apt upgrade -y
-apt install curl -y
+apt install curl git -y
 
 echo "Recreating sources list"
 
@@ -42,7 +42,7 @@ chmod +x liquorix.sh
 
 ./liquorix.sh
 
-cd ..
+cd..
 rm -r tmp
 
 echo "Setting repository priority"
@@ -79,7 +79,6 @@ echo "managed=true" >> /etc/NetworkManager/NetworkManager.conf
 
 
 echo "Installing firmware"
-cd
 git clone https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/
 cp -r linux-firmware/* /usr/lib/firmware
 rm -r linux-firmware
@@ -106,6 +105,26 @@ if [[ $(lspci -nn | egrep -i "3d|display|vga" | grep "NVIDIA") == *NVIDIA* ]]; t
   echo "Found NVIDIA device, installing driver."
   apt install nvidia-driver -y
 fi
+
+echo "Installing customizations"
+git clone https://github.com/vinceliuice/grub2-themes.git
+cd grub2-themes
+chmod +x install.sh
+./install.sh -b -t stylish
+cd ..
+rm -r grub2-themes
+
+curl https://r4.wallpaperflare.com/wallpaper/138/915/764/debian-logo-red-spiral-logo-wallpaper-e990484de1aaaddb3607f81f00f1a6ed.jpg >> /usr/share/themes/wp.jpg
+
+apt install libglib2.0-dev dconf-cli
+git clone --depth=1 https://github.com/realmazharhussain/gdm-tools.git
+cd gdm-tools
+chmod +x install.sh
+./install sh
+set-gdm-theme set -b </usr/share/themes/wp.jpg>
+cd ..
+rm -r gdm-tools
+
 
 echo "Remove unnecessary packages"
 apt autoremove -y
