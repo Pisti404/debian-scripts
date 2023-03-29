@@ -6,6 +6,9 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+echo "Are you running this script on a notebook (if yes lqx kernel won't be installed, and will install tlp y/n)" 
+read isNotebook
+
 apt update && apt upgrade -y
 apt install curl git -y
 
@@ -31,6 +34,8 @@ deb http://deb.debian.org/debian bullseye-backports main contrib non-free
 deb-src http://deb.debian.org/debian bullseye-backports main contrib non-free
 EOT
 
+if [ isNotebook == "n"]
+then
 echo "Adding lqx-kernel repository"
 
 mkdir tmp
@@ -44,6 +49,13 @@ chmod +x liquorix.sh
 
 cd..
 rm -r tmp
+
+else 
+
+apt install tlp
+systemct enable tlp
+
+fi
 
 echo "Setting repository priority"
 cat <<EOT >> /etc/apt/preferences.d/default
