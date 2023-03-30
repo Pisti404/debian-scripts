@@ -6,8 +6,6 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-echo "Are you running this script on a notebook (if yes lqx kernel won't be installed, and will install tlp y/n)" 
-read isNotebook
 
 apt update && apt upgrade -y
 apt install curl git -y
@@ -34,29 +32,6 @@ deb http://deb.debian.org/debian bullseye-backports main contrib non-free
 deb-src http://deb.debian.org/debian bullseye-backports main contrib non-free
 EOT
 
-if [ isNotebook == "n"]
-then
-echo "Adding lqx-kernel repository"
-
-mkdir tmp
-cd tmp
-
-curl 'https://liquorix.net/install-liquorix.sh' -o liquorix.sh
-
-chmod +x liquorix.sh
-
-./liquorix.sh
-
-cd..
-rm -r tmp
-
-else 
-
-apt install tlp
-systemct enable tlp
-
-fi
-
 echo "Setting repository priority"
 cat <<EOT >> /etc/apt/preferences.d/default
 package: *
@@ -71,8 +46,6 @@ package: *
 Pin: release a=bullseye
 Pin-Priority: 80
 EOT
-
-
 
 echo "Upgrading system"
 
@@ -98,7 +71,7 @@ rm -r linux-firmware
 while true; do
     read -p "Do you want to install wine and lutris? " yn
     case $yn in
-        [Yy]* ) dpkg --add-architecture i386; wget -qO- https://dl.winehq.org/wine-builds/winehq.key | tee /etc/apt/trusted.gpg.d/winehq.key; echo "deb https://dl.winehq.org/wine-builds/debian/ sid main" >> /etc/apt/sources.list; apt update; apt install winehq-staging winetricks lutris -y; break;;
+        [Yy]* ) dpkg --add-architecture i386; apt update; apt install wine winetricks lutris -y; break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
@@ -109,6 +82,15 @@ while true; do
     case $yn in
         [Yy]* ) dpkg --add-architecture i386; apt install steam -y; break;;
         [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+while true; do
+    read -p "Are you running this script on a desktop? " yn
+    case $yn in
+        [Yy]* ) echo "Adding lqx-kernel repository"; curl 'https://liquorix.net/install-liquorix.sh' -o liquorix.sh; chmod +x liquorix.sh; ./liquorix.sh; rm liqourix.sh; break;;
+        [Nn]* ) apt install tlp -y; systemct enable tlp;;
         * ) echo "Please answer yes or no.";;
     esac
 done
@@ -126,14 +108,14 @@ chmod +x install.sh
 cd ..
 rm -r grub2-themes
 
-curl https://r4.wallpaperflare.com/wallpaper/138/915/764/debian-logo-red-spiral-logo-wallpaper-e990484de1aaaddb3607f81f00f1a6ed.jpg >> /usr/share/themes/wp.jpg
+curl https://r4.wallpaperflare.com/wallpaper/138/915/764/debian-logo-red-spiral-logo-wallpaper-e990484de1aaaddb3607f81f00f1a6ed.jpg >> /usr/share/themes/gdmwp.jpg
 
 apt install libglib2.0-dev dconf-cli
 git clone --depth=1 https://github.com/realmazharhussain/gdm-tools.git
 cd gdm-tools
 chmod +x install.sh
-./install sh
-set-gdm-theme set -b </usr/share/themes/wp.jpg>
+./install.sh
+set-gdm-theme set -b </usr/share/themes/gdmwp.jpg>
 cd ..
 rm -r gdm-tools
 
