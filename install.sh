@@ -86,14 +86,14 @@ while true; do
     read -p "Are you running this script on a desktop? " yn
     case $yn in
         [Yy]* ) echo "Adding lqx-kernel repository"; curl 'https://liquorix.net/install-liquorix.sh' -o liquorix.sh; chmod +x liquorix.sh; ./liquorix.sh; rm liqourix.sh; break;;
-        [Nn]* ) apt install tlp -y; systemctl enable tlp;;
+        [Nn]* ) apt install tlp -y; systemctl enable tlp; break;;
         * ) echo "Please answer yes or no.";;
     esac
 done
 
 clear
 while true; do
-    read -p "Do you have another OS on your system? (UEFI only)" yn
+    read -p "Do you have another OS on your system? (UEFI only) " yn
     case $yn in
         [Yy]* ) cd /etc/default; cp grub grub2; rm grub; sed 's/#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' grub2 > grub; apt remove grub-pc grub-pc-bin -y; apt install efibootmgr grub-efi-amd64 grub-efi-amd64-bin -y; os-prober; update-grub; break;;
         [Nn]* ) break;;
