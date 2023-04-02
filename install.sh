@@ -6,12 +6,10 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-
 apt update && apt upgrade -y
 apt install curl git -y
 
 echo "Recreating sources list"
-
 rm /etc/apt/sources.list
 touch /etc/apt/sources.list
 
@@ -48,49 +46,57 @@ Pin-Priority: 80
 EOT
 
 echo "Upgrading system"
-
 apt update && apt upgrade -y && apt autoremove -y 
 
-
 echo "Installing gnome and default software"
-
-apt install gnome-core libreoffice gnome-tweaks firefox-esr flatpak gnome-software-plugin-flatpak git nala vlc firmware-misc-nonfree -y
+apt install gnome-core libreoffice libreoffice-gnome gnome-tweaks firefox flatpak gnome-software-plugin-flatpak git nala vlc celluloid firmware-misc-nonfree sudo qgnomeplatform-qt5 adwaita-qt adwaita-qt6 webext-ublock-origin-firefox -y
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo "Configuring Network Manager"
-
-sed -i '/managed=fasle/d' /etc/NetworkManager/NetworkManager.conf
+sed -i '/managed=false/d' /etc/NetworkManager/NetworkManager.conf
 echo "managed=true" >> /etc/NetworkManager/NetworkManager.conf
-
 
 echo "Installing firmware"
 git clone https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/
 cp -r linux-firmware/* /usr/lib/firmware
 rm -r linux-firmware
 
+clear
 while true; do
     read -p "Do you want to install wine and lutris? " yn
     case $yn in
         [Yy]* ) dpkg --add-architecture i386; apt update; apt install wine winetricks lutris -y; break;;
-        [Nn]* ) exit;;
+        [Nn]* ) break;;
         * ) echo "Please answer yes or no.";;
     esac
 done
 
+clear
 while true; do
     read -p "Do you want to install Steam? " yn
     case $yn in
-        [Yy]* ) dpkg --add-architecture i386; apt install steam -y; break;;
-        [Nn]* ) exit;;
+        [Yy]* ) dpkg --add-architecture i386; apt update; apt install steam-installer protontricks -y; break;;
+        [Nn]* ) break;;
         * ) echo "Please answer yes or no.";;
     esac
 done
 
+clear
 while true; do
     read -p "Are you running this script on a desktop? " yn
     case $yn in
         [Yy]* ) echo "Adding lqx-kernel repository"; curl 'https://liquorix.net/install-liquorix.sh' -o liquorix.sh; chmod +x liquorix.sh; ./liquorix.sh; rm liqourix.sh; break;;
-        [Nn]* ) apt install tlp -y; systemct enable tlp;;
+        [Nn]* ) apt install tlp -y; systemctl enable tlp;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+clear
+while true; do
+    read -p "Do you have another OS on your system? (UEFI only)" yn
+    case $yn in
+        [Yy]* ) cd /etc/default; cp grub grub2; rm grub; sed 's/#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' grub2 > grub; apt remove grub-pc grub-pc-bin -y; apt install efibootmgr grub-efi-amd64 grub-efi-amd64-bin -y; os-prober; update-grub; break;;
+        [Nn]* ) break;;
         * ) echo "Please answer yes or no.";;
     esac
 done
@@ -99,26 +105,6 @@ if [[ $(lspci -nn | egrep -i "3d|display|vga" | grep "NVIDIA") == *NVIDIA* ]]; t
   echo "Found NVIDIA device, installing driver."
   apt install nvidia-driver -y
 fi
-
-echo "Installing customizations"
-git clone https://github.com/vinceliuice/grub2-themes.git
-cd grub2-themes
-chmod +x install.sh
-./install.sh -b -t stylish
-cd ..
-rm -r grub2-themes
-
-curl https://r4.wallpaperflare.com/wallpaper/138/915/764/debian-logo-red-spiral-logo-wallpaper-e990484de1aaaddb3607f81f00f1a6ed.jpg >> /usr/share/themes/gdmwp.jpg
-
-apt install libglib2.0-dev dconf-cli
-git clone --depth=1 https://github.com/realmazharhussain/gdm-tools.git
-cd gdm-tools
-chmod +x install.sh
-./install.sh
-set-gdm-theme set -b </usr/share/themes/gdmwp.jpg>
-cd ..
-rm -r gdm-tools
-
 
 echo "Remove unnecessary packages"
 apt autoremove -y
